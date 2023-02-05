@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //https://dev.classmethod.jp/articles/flutter-rest-api/
 //↑FlutterパッケージのHTTPでAPI通信を行う方法
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
       var response = await http.get(Uri.https(
           'www.googleapis.com',
           '/books/v1/volumes',
-          {'q': '{Flutter}', 'maxResults': '40', 'langRestrict': 'ja'}));
+          {'q': '{ブルーロック}', 'maxResults': '20', 'langRestrict': 'ja'}));
       // 2. 問題がなければ、Json型に変換したデータを格納
       var jsonResponse = _response(response);
       // 3. 本の情報をリスト形式でデータを格納
@@ -131,6 +132,22 @@ class _MyHomePageState extends State<MyHomePage> {
                           subtitle: Text(
                             items[index]['volumeInfo']['publishedDate'],
                           ),
+                          onTap: () async {
+                            print('onTap');
+                            const url =
+                                'https://www.kamo-it.org/'; //←ここに表示させたいURLを入力する
+                            if (await canLaunch(
+                                items[index]['volumeInfo']['previewLink'])) {
+                              await launch(
+                                items[index]['volumeInfo']['previewLink'],
+                                forceSafariVC: true,
+                                forceWebView: true,
+                              );
+                            } else {
+                              throw 'このURLにはアクセスできません';
+                            }
+                            ;
+                          },
                         ),
                       ],
                     ),
@@ -139,5 +156,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
     );
+  }
+
+  void _opneUrl() async {
+    const url = 'https://www.kamo-it.org/'; //←ここに表示させたいURLを入力する
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: true,
+        forceWebView: true,
+      );
+    } else {
+      throw 'このURLにはアクセスできません';
+    }
   }
 }
