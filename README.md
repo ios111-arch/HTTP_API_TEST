@@ -1,6 +1,6 @@
 # http_test
 
-A new Flutter project.
+パッケージ『http』を利用したAPI通信サンプルコード
 
 ## Getting Started
 
